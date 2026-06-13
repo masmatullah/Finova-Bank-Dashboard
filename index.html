@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finova Bank – Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- ═══════════════════════════════ AUTH PAGES ═══════════════════════════════ -->
+<div id="authWrapper" class="auth-wrapper">
+
+  <!-- LOGIN -->
+  <div id="loginPage" class="auth-page active">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-icon"><i class="fa-solid fa-landmark"></i></div>
+        <span class="logo-text">Finova<span>Bank</span></span>
+      </div>
+      <h2>Welcome back</h2>
+      <p class="auth-sub">Sign in to your account</p>
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrap"><i class="fa fa-envelope"></i><input type="email" id="loginEmail" placeholder="you@example.com" /></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap"><i class="fa fa-lock"></i><input type="password" id="loginPassword" placeholder="••••••••" /><i class="fa fa-eye toggle-pw" onclick="togglePw('loginPassword',this)"></i></div>
+      </div>
+      <div class="form-row">
+        <label class="checkbox-label"><input type="checkbox" /> Remember me</label>
+        <a href="#" class="link-text">Forgot password?</a>
+      </div>
+      <button class="btn-primary full" onclick="handleLogin()"><span>Sign In</span><i class="fa fa-arrow-right"></i></button>
+      <p class="auth-switch">Don't have an account? <a href="#" onclick="showPage('signupPage')">Create one</a></p>
+    </div>
+    <div class="auth-visual">
+      <div class="av-content">
+        <div class="av-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Bank-grade Security</h3>
+        <p>256-bit encryption, multi-factor authentication and real-time fraud detection.</p>
+        <div class="av-stats">
+          <div><strong>2M+</strong><span>Customers</span></div>
+          <div><strong>99.9%</strong><span>Uptime</span></div>
+          <div><strong>0</strong><span>Breaches</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGNUP -->
+  <div id="signupPage" class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-icon"><i class="fa-solid fa-landmark"></i></div>
+        <span class="logo-text">Finova<span>Bank</span></span>
+      </div>
+      <h2>Create Account</h2>
+      <p class="auth-sub">Join Finova Bank today</p>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>First Name</label>
+          <div class="input-wrap"><i class="fa fa-user"></i><input type="text" id="signupFirst" placeholder="Alex" /></div>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <div class="input-wrap"><i class="fa fa-user"></i><input type="text" id="signupLast" placeholder="Johnson" /></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrap"><i class="fa fa-envelope"></i><input type="email" id="signupEmail" placeholder="you@example.com" /></div>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <div class="input-wrap"><i class="fa fa-phone"></i><input type="tel" id="signupPhone" placeholder="+1 234 567 8900" /></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap"><i class="fa fa-lock"></i><input type="password" id="signupPassword" placeholder="Min 8 characters" /><i class="fa fa-eye toggle-pw" onclick="togglePw('signupPassword',this)"></i></div>
+      </div>
+      <div class="form-group">
+        <label><input type="checkbox" id="signupTerms"/> I agree to <a href="#" class="link-text">Terms & Privacy Policy</a></label>
+      </div>
+      <button class="btn-primary full" onclick="handleSignup()"><span>Create Account</span><i class="fa fa-arrow-right"></i></button>
+      <p class="auth-switch">Already have an account? <a href="#" onclick="showPage('loginPage')">Sign in</a></p>
+    </div>
+    <div class="auth-visual">
+      <div class="av-content">
+        <div class="av-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <h3>Smart Financial Tools</h3>
+        <p>Track spending, set budgets, and grow your wealth with AI-powered insights.</p>
+        <div class="av-stats">
+          <div><strong>$4.2B</strong><span>Managed</span></div>
+          <div><strong>150+</strong><span>Features</span></div>
+          <div><strong>4.9★</strong><span>Rating</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /authWrapper -->
+
+<!-- ═══════════════════════════════ APP ═══════════════════════════════ -->
+<div id="appWrapper" class="app-wrapper hidden">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon"><i class="fa-solid fa-landmark"></i></div>
+      <span class="logo-text">Finova<span>Bank</span></span>
+      <button class="sidebar-close" onclick="toggleSidebar()"><i class="fa fa-times"></i></button>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="su-avatar" id="sidebarAvatar">AJ</div>
+      <div>
+        <div class="su-name" id="sidebarName">Alex Johnson</div>
+        <div class="su-role">Premium Member</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-label">MAIN</div>
+      <a href="#" class="nav-item active" onclick="switchSection('dashboard',this)"><i class="fa fa-house"></i><span>Dashboard</span></a>
+      <a href="#" class="nav-item" onclick="switchSection('accounts',this)"><i class="fa fa-wallet"></i><span>Accounts</span></a>
+      <a href="#" class="nav-item" onclick="switchSection('transactions',this)"><i class="fa fa-arrows-left-right"></i><span>Transactions</span></a>
+      <a href="#" class="nav-item" onclick="switchSection('analytics',this)"><i class="fa fa-chart-pie"></i><span>Analytics</span></a>
+      <div class="nav-label">SETTINGS</div>
+      <a href="#" class="nav-item" onclick="switchSection('profile',this)"><i class="fa fa-user"></i><span>Profile</span></a>
+      <a href="#" class="nav-item" onclick="switchSection('notifications',this)"><i class="fa fa-bell"></i><span>Notifications</span><span class="badge" id="notifBadge">3</span></a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" onclick="toggleTheme()"><i class="fa fa-moon" id="themeIcon"></i><span id="themeLabel">Dark Mode</span></button>
+      <button class="btn-logout" onclick="handleLogout()"><i class="fa fa-right-from-bracket"></i><span>Logout</span></button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- TOP NAV -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <i class="fa fa-search"></i>
+          <input type="text" id="globalSearch" placeholder="Search transactions…" oninput="liveSearch(this.value)" />
+        </div>
+        <button class="icon-btn" onclick="switchSection('notifications', document.querySelector('.nav-item:nth-child(7)'))">
+          <i class="fa fa-bell"></i>
+          <span class="icon-badge" id="topNotifBadge">3</span>
+        </button>
+        <div class="topbar-avatar" onclick="switchSection('profile', document.querySelector('.nav-item:nth-child(6)'))">
+          <span id="topbarAvatar">AJ</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── SECTION: DASHBOARD ─── -->
+    <section id="sec-dashboard" class="section active">
+      <div class="section-header">
+        <div>
+          <h1 id="greetingText">Good morning, Alex 👋</h1>
+          <p class="section-sub">Here's your financial overview</p>
+        </div>
+        <button class="btn-primary" onclick="openModal('depositModal')"><i class="fa fa-plus"></i> Quick Add</button>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="stat-grid">
+        <div class="stat-card total-bal">
+          <div class="sc-top"><span class="sc-label">Total Balance</span><div class="sc-icon"><i class="fa fa-landmark"></i></div></div>
+          <div class="sc-value skeleton" id="statBalance">$0.00</div>
+          <div class="sc-change positive"><i class="fa fa-arrow-trend-up"></i> +2.4% this month</div>
+        </div>
+        <div class="stat-card income-card">
+          <div class="sc-top"><span class="sc-label">Monthly Income</span><div class="sc-icon income"><i class="fa fa-arrow-down-to-line"></i></div></div>
+          <div class="sc-value skeleton" id="statIncome">$0.00</div>
+          <div class="sc-change positive"><i class="fa fa-arrow-trend-up"></i> +5.1% vs last month</div>
+        </div>
+        <div class="stat-card expense-card">
+          <div class="sc-top"><span class="sc-label">Monthly Expenses</span><div class="sc-icon expense"><i class="fa fa-arrow-up-from-line"></i></div></div>
+          <div class="sc-value skeleton" id="statExpense">$0.00</div>
+          <div class="sc-change negative"><i class="fa fa-arrow-trend-down"></i> -1.2% vs last month</div>
+        </div>
+        <div class="stat-card savings-card">
+          <div class="sc-top"><span class="sc-label">Savings</span><div class="sc-icon savings"><i class="fa fa-piggy-bank"></i></div></div>
+          <div class="sc-value skeleton" id="statSavings">$0.00</div>
+          <div class="sc-change positive"><i class="fa fa-arrow-trend-up"></i> +8.7% this month</div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <button class="qa-btn" onclick="openModal('depositModal')"><div class="qa-icon dep"><i class="fa fa-arrow-down"></i></div><span>Deposit</span></button>
+        <button class="qa-btn" onclick="openModal('withdrawModal')"><div class="qa-icon with"><i class="fa fa-arrow-up"></i></div><span>Withdraw</span></button>
+        <button class="qa-btn" onclick="openModal('transferModal')"><div class="qa-icon trf"><i class="fa fa-arrows-left-right"></i></div><span>Transfer</span></button>
+        <button class="qa-btn" onclick="switchSection('analytics', document.querySelector('[onclick*=analytics]'))"><div class="qa-icon an"><i class="fa fa-chart-bar"></i></div><span>Analytics</span></button>
+      </div>
+
+      <!-- RECENT TRANSACTIONS + ACTIVITY -->
+      <div class="dashboard-bottom">
+        <div class="card recent-txn-card">
+          <div class="card-header">
+            <h3>Recent Transactions</h3>
+            <a href="#" onclick="switchSection('transactions', document.querySelector('[onclick*=transactions]'))" class="link-text">View all</a>
+          </div>
+          <div id="recentTxnList" class="txn-list"></div>
+        </div>
+        <div class="card activity-card">
+          <div class="card-header"><h3>Activity Feed</h3></div>
+          <div id="activityFeed" class="activity-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: ACCOUNTS ─── -->
+    <section id="sec-accounts" class="section">
+      <div class="section-header">
+        <div><h1>My Accounts</h1><p class="section-sub">Manage all your accounts</p></div>
+        <button class="btn-primary" onclick="openModal('depositModal')"><i class="fa fa-plus"></i> Deposit</button>
+      </div>
+      <div id="accountsGrid" class="accounts-grid"></div>
+      <div class="card mt-24">
+        <div class="card-header"><h3>Account Summary</h3></div>
+        <div id="accountSummaryTable" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: TRANSACTIONS ─── -->
+    <section id="sec-transactions" class="section">
+      <div class="section-header">
+        <div><h1>Transactions</h1><p class="section-sub">Full history of all activity</p></div>
+        <div class="header-actions">
+          <button class="btn-secondary" onclick="openModal('depositModal')"><i class="fa fa-arrow-down"></i> Deposit</button>
+          <button class="btn-secondary" onclick="openModal('withdrawModal')"><i class="fa fa-arrow-up"></i> Withdraw</button>
+          <button class="btn-primary" onclick="openModal('transferModal')"><i class="fa fa-arrows-left-right"></i> Transfer</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="txn-filters">
+          <div class="input-wrap search-wrap"><i class="fa fa-search"></i><input type="text" id="txnSearch" placeholder="Search transactions…" oninput="filterTransactions()" /></div>
+          <select id="txnTypeFilter" onchange="filterTransactions()" class="filter-select">
+            <option value="">All Types</option>
+            <option value="deposit">Deposit</option>
+            <option value="withdraw">Withdraw</option>
+            <option value="transfer">Transfer</option>
+          </select>
+          <select id="txnCatFilter" onchange="filterTransactions()" class="filter-select">
+            <option value="">All Categories</option>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Bills">Bills</option>
+            <option value="Health">Health</option>
+            <option value="Salary">Salary</option>
+            <option value="Transfer">Transfer</option>
+          </select>
+          <select id="txnSortFilter" onchange="filterTransactions()" class="filter-select">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="highest">Highest Amount</option>
+            <option value="lowest">Lowest Amount</option>
+          </select>
+        </div>
+        <div id="fullTxnList" class="txn-list"></div>
+        <div id="txnEmpty" class="empty-state hidden"><i class="fa fa-inbox"></i><p>No transactions found</p></div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: ANALYTICS ─── -->
+    <section id="sec-analytics" class="section">
+      <div class="section-header">
+        <div><h1>Analytics</h1><p class="section-sub">Detailed financial insights</p></div>
+        <select id="analyticsRange" onchange="renderCharts()" class="filter-select">
+          <option value="6">Last 6 Months</option>
+          <option value="3">Last 3 Months</option>
+          <option value="12">Last 12 Months</option>
+        </select>
+      </div>
+      <div class="analytics-top">
+        <div class="card chart-card">
+          <div class="card-header"><h3>Income vs Expenses</h3></div>
+          <canvas id="incomeExpenseChart"></canvas>
+        </div>
+        <div class="card chart-card">
+          <div class="card-header"><h3>Monthly Spending</h3></div>
+          <canvas id="monthlySpendChart"></canvas>
+        </div>
+      </div>
+      <div class="card chart-card-full mt-24">
+        <div class="card-header"><h3>Category-wise Expenses</h3></div>
+        <div class="cat-chart-wrap">
+          <canvas id="categoryChart" style="max-height:260px;max-width:260px;"></canvas>
+          <div id="catLegend" class="cat-legend"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: PROFILE ─── -->
+    <section id="sec-profile" class="section">
+      <div class="section-header">
+        <div><h1>Profile</h1><p class="section-sub">Manage your account details</p></div>
+        <button class="btn-primary" id="editProfileBtn" onclick="toggleEditProfile()"><i class="fa fa-pen"></i> Edit Profile</button>
+      </div>
+      <div class="profile-layout">
+        <div class="card profile-card">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="profileAvatar">AJ</div>
+            <button class="avatar-change-btn" onclick="changeAvatar()"><i class="fa fa-camera"></i></button>
+          </div>
+          <div class="profile-name" id="profileDisplayName">Alex Johnson</div>
+          <div class="profile-email" id="profileDisplayEmail">alex.johnson@email.com</div>
+          <div class="profile-badge"><i class="fa fa-star"></i> Premium Member</div>
+          <div class="profile-meta">
+            <div><span>Member Since</span><strong>Jan 2022</strong></div>
+            <div><span>Account No.</span><strong>#FNV-00124</strong></div>
+          </div>
+        </div>
+        <div class="card profile-form-card">
+          <h3>Personal Information</h3>
+          <div id="profileViewMode">
+            <div class="profile-info-grid">
+              <div class="pi-item"><span>First Name</span><strong id="pvFirst">Alex</strong></div>
+              <div class="pi-item"><span>Last Name</span><strong id="pvLast">Johnson</strong></div>
+              <div class="pi-item"><span>Email</span><strong id="pvEmail">alex.johnson@email.com</strong></div>
+              <div class="pi-item"><span>Phone</span><strong id="pvPhone">+1 234 567 8900</strong></div>
+              <div class="pi-item"><span>City</span><strong id="pvCity">New York</strong></div>
+              <div class="pi-item"><span>Country</span><strong id="pvCountry">United States</strong></div>
+            </div>
+          </div>
+          <div id="profileEditMode" class="hidden">
+            <div class="form-row-2">
+              <div class="form-group"><label>First Name</label><div class="input-wrap"><i class="fa fa-user"></i><input type="text" id="editFirst" /></div></div>
+              <div class="form-group"><label>Last Name</label><div class="input-wrap"><i class="fa fa-user"></i><input type="text" id="editLast" /></div></div>
+            </div>
+            <div class="form-group"><label>Email</label><div class="input-wrap"><i class="fa fa-envelope"></i><input type="email" id="editEmail" /></div></div>
+            <div class="form-group"><label>Phone</label><div class="input-wrap"><i class="fa fa-phone"></i><input type="tel" id="editPhone" /></div></div>
+            <div class="form-row-2">
+              <div class="form-group"><label>City</label><div class="input-wrap"><i class="fa fa-city"></i><input type="text" id="editCity" /></div></div>
+              <div class="form-group"><label>Country</label><div class="input-wrap"><i class="fa fa-earth-americas"></i><input type="text" id="editCountry" /></div></div>
+            </div>
+            <div class="form-actions">
+              <button class="btn-secondary" onclick="toggleEditProfile()">Cancel</button>
+              <button class="btn-primary" onclick="saveProfile()"><i class="fa fa-check"></i> Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION: NOTIFICATIONS ─── -->
+    <section id="sec-notifications" class="section">
+      <div class="section-header">
+        <div><h1>Notifications</h1><p class="section-sub">Your recent alerts</p></div>
+        <button class="btn-secondary" onclick="clearAllNotifs()"><i class="fa fa-trash"></i> Clear All</button>
+      </div>
+      <div class="card">
+        <div id="notifList" class="notif-list"></div>
+      </div>
+    </section>
+
+  </main>
+</div><!-- /appWrapper -->
+
+<!-- ══════════════════════ MODALS ══════════════════════ -->
+
+<!-- DEPOSIT -->
+<div id="depositModal" class="modal-overlay" onclick="closeModalOutside(event,'depositModal')">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="fa fa-arrow-down"></i> Deposit Money</h3><button onclick="closeModal('depositModal')"><i class="fa fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Account</label>
+        <select id="depositAccount" class="filter-select full">
+          <option value="savings">Savings Account</option>
+          <option value="current">Current Account</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Amount ($)</label><div class="input-wrap"><i class="fa fa-dollar-sign"></i><input type="number" id="depositAmount" placeholder="0.00" min="1"/></div></div>
+      <div class="form-group"><label>Description (optional)</label><div class="input-wrap"><i class="fa fa-note-sticky"></i><input type="text" id="depositDesc" placeholder="e.g. Salary deposit"/></div></div>
+      <div class="amount-shortcuts">
+        <button onclick="setAmt('depositAmount',100)">$100</button>
+        <button onclick="setAmt('depositAmount',500)">$500</button>
+        <button onclick="setAmt('depositAmount',1000)">$1,000</button>
+        <button onclick="setAmt('depositAmount',5000)">$5,000</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('depositModal')">Cancel</button>
+      <button class="btn-primary" onclick="doDeposit()"><i class="fa fa-check"></i> Confirm Deposit</button>
+    </div>
+  </div>
+</div>
+
+<!-- WITHDRAW -->
+<div id="withdrawModal" class="modal-overlay" onclick="closeModalOutside(event,'withdrawModal')">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="fa fa-arrow-up"></i> Withdraw Money</h3><button onclick="closeModal('withdrawModal')"><i class="fa fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Account</label>
+        <select id="withdrawAccount" class="filter-select full">
+          <option value="savings">Savings Account</option>
+          <option value="current">Current Account</option>
+          <option value="credit">Credit Card</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Amount ($)</label><div class="input-wrap"><i class="fa fa-dollar-sign"></i><input type="number" id="withdrawAmount" placeholder="0.00" min="1"/></div></div>
+      <div class="form-group"><label>Category</label>
+        <select id="withdrawCategory" class="filter-select full">
+          <option value="Food">Food & Dining</option>
+          <option value="Transport">Transport</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Bills">Bills & Utilities</option>
+          <option value="Health">Health & Medical</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Description</label><div class="input-wrap"><i class="fa fa-note-sticky"></i><input type="text" id="withdrawDesc" placeholder="e.g. Grocery shopping"/></div></div>
+      <div class="amount-shortcuts">
+        <button onclick="setAmt('withdrawAmount',50)">$50</button>
+        <button onclick="setAmt('withdrawAmount',100)">$100</button>
+        <button onclick="setAmt('withdrawAmount',200)">$200</button>
+        <button onclick="setAmt('withdrawAmount',500)">$500</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('withdrawModal')">Cancel</button>
+      <button class="btn-primary" onclick="doWithdraw()"><i class="fa fa-check"></i> Confirm Withdrawal</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSFER -->
+<div id="transferModal" class="modal-overlay" onclick="closeModalOutside(event,'transferModal')">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="fa fa-arrows-left-right"></i> Transfer Money</h3><button onclick="closeModal('transferModal')"><i class="fa fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>From Account</label>
+        <select id="transferFrom" class="filter-select full">
+          <option value="savings">Savings Account</option>
+          <option value="current">Current Account</option>
+          <option value="credit">Credit Card</option>
+        </select>
+      </div>
+      <div class="transfer-arrow"><i class="fa fa-arrow-down"></i></div>
+      <div class="form-group"><label>To Account</label>
+        <select id="transferTo" class="filter-select full">
+          <option value="current">Current Account</option>
+          <option value="savings">Savings Account</option>
+          <option value="external">External Account</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Amount ($)</label><div class="input-wrap"><i class="fa fa-dollar-sign"></i><input type="number" id="transferAmount" placeholder="0.00" min="1"/></div></div>
+      <div class="form-group"><label>Note (optional)</label><div class="input-wrap"><i class="fa fa-note-sticky"></i><input type="text" id="transferNote" placeholder="e.g. Rent payment"/></div></div>
+      <div class="amount-shortcuts">
+        <button onclick="setAmt('transferAmount',100)">$100</button>
+        <button onclick="setAmt('transferAmount',500)">$500</button>
+        <button onclick="setAmt('transferAmount',1000)">$1,000</button>
+        <button onclick="setAmt('transferAmount',2000)">$2,000</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('transferModal')">Cancel</button>
+      <button class="btn-primary" onclick="doTransfer()"><i class="fa fa-check"></i> Confirm Transfer</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
